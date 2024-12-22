@@ -29,7 +29,7 @@ class OBJECT_OT_keyframe_all_shape_keys(bpy.types.Operator):
 # オペレーター: すべてのシェイプキーをリセット
 class OBJECT_OT_reset_all_shape_keys(bpy.types.Operator):
     bl_idname = "object.reset_all_shape_keys"
-    bl_label = "アクティブなシェイプキーのキーフレームを0で入力"
+    bl_label = "アクティブなシェイプキーを0の値で入力"
     bl_description = "選択したオブジェクトのすべてのシェイプキーを0にリセット"
 
     def execute(self, context):
@@ -43,7 +43,7 @@ class OBJECT_OT_reset_all_shape_keys(bpy.types.Operator):
 # オペレーター: 全てのシェイプキーをリセットしてキーフレームを挿入
 class OBJECT_OT_reset_key_all_shape_keys(bpy.types.Operator):
     bl_idname = "object.reset_key_all_shape_keys"
-    bl_label = "すべてのシェイプキーのシェイプキーを0の値で入力"
+    bl_label = "すべてのシェイプキーを0の値で入力"
     bl_description = "すべてのシェイプキーを0にリセットしてキーフレームを挿入"
 
     def execute(self, context):
