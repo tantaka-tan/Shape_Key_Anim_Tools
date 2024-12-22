@@ -8,6 +8,21 @@ bl_info = {
     "blender": (3, 6, 0),
     "category": "Object",
 }
+# オペレーター: すべてのシェイプキーをリセット
+class OBJECT_OT_reset_all_shape_keys(bpy.types.Operator):
+    bl_idname = "object.reset_all_shape_keys"
+    bl_label = "アクティブなシェイプキーをリセット"
+    bl_description = "選択したオブジェクトのすべてのシェイプキーを0にリセット"
+
+    def execute(self, context):
+        obj = context.active_object
+        if obj and obj.data.shape_keys:
+            for key_block in obj.data.shape_keys.key_blocks:
+                key_block.value = 0.0
+            self.report({'INFO'}, "アクティブなシェイプキーをリセットしました")
+        return {'FINISHED'}
+
+
 # オペレーター: すべてのシェイプキーを入力
 
 class OBJECT_OT_keyframe_all_shape_keys(bpy.types.Operator):
@@ -26,19 +41,6 @@ class OBJECT_OT_keyframe_all_shape_keys(bpy.types.Operator):
         return {'FINISHED'}
 
 
-# オペレーター: すべてのシェイプキーをリセット
-class OBJECT_OT_reset_all_shape_keys(bpy.types.Operator):
-    bl_idname = "object.reset_all_shape_keys"
-    bl_label = "アクティブなシェイプキーを0の値で入力"
-    bl_description = "選択したオブジェクトのすべてのシェイプキーを0にリセット"
-
-    def execute(self, context):
-        obj = context.active_object
-        if obj and obj.data.shape_keys:
-            for key_block in obj.data.shape_keys.key_blocks:
-                key_block.value = 0.0
-            self.report({'INFO'}, "すべてのシェイプキーを0にリセットしました")
-        return {'FINISHED'}
 
 # オペレーター: 全てのシェイプキーをリセットしてキーフレームを挿入
 class OBJECT_OT_reset_key_all_shape_keys(bpy.types.Operator):
@@ -52,7 +54,7 @@ class OBJECT_OT_reset_key_all_shape_keys(bpy.types.Operator):
             for key_block in obj.data.shape_keys.key_blocks:
                 key_block.value = 0.0
                 key_block.keyframe_insert(data_path="value", frame=context.scene.frame_current)
-            self.report({'INFO'}, "すべてのシェイプキーをリセットし、キーフレームを挿入しました")
+            self.report({'INFO'}, "すべてのシェイプキーを0の値でキーフレームを挿入しました")
         return {'FINISHED'}
 
 # オペレーター: ミュートされていないシェイプキーにキーフレームを挿入
@@ -74,7 +76,7 @@ class OBJECT_OT_keyframe_non_muted_shape_keys(bpy.types.Operator):
 class OBJECT_OT_keyframe_non_muted_shape_keys_zero(bpy.types.Operator):
     bl_idname = "object.keyframe_non_muted_shape_keys_zero"
     bl_label = "ミュート以外のシェイプキーを0の値で入力"
-    bl_description = "ミュートされていないすべてのシェイプキーに値0のキーフレームを挿入"
+    bl_description = "ミュート以外のシェイプキーを0の値でキーフレームを挿入"
 
     def execute(self, context):
         obj = context.active_object
@@ -83,7 +85,7 @@ class OBJECT_OT_keyframe_non_muted_shape_keys_zero(bpy.types.Operator):
                 if not key_block.mute:
                     key_block.value = 0.0
                     key_block.keyframe_insert(data_path="value", frame=context.scene.frame_current)
-            self.report({'INFO'}, "ミュート以外のシェイプキーに値0のキーフレームを挿入しました")
+            self.report({'INFO'}, "ミュート以外のシェイプキーを0の値でキーフレームを挿入しました")
         return {'FINISHED'}
 
 
@@ -133,7 +135,7 @@ class OBJECT_OT_copy_paste_keyframe_with_popup(bpy.types.Operator):
 
         # 貼り付けたフレームに移動
         context.scene.frame_current = next_frame
-        self.report({'INFO'}, f"フレーム{current_frame}のキーフレームをフレーム{next_frame}にコピーして移動しました")
+        self.report({'INFO'}, f"フレーム{current_frame}のキーフレームをフレーム{next_frame}に複製複製しました")
         return {'FINISHED'}
 
     def invoke(self, context, event):
@@ -146,9 +148,9 @@ class VIEW3D_MT_shape_key_menu(bpy.types.Menu):
 
     def draw(self, context):
         layout = self.layout
+        layout.operator(OBJECT_OT_reset_all_shape_keys.bl_idname, text="アクティブなシェイプキーをリセット")
         layout.operator(OBJECT_OT_keyframe_all_shape_keys.bl_idname, text="すべてのシェイプキーを現在のまま入力") 
         layout.operator(OBJECT_OT_reset_key_all_shape_keys.bl_idname, text="すべてのシェイプキーを0の値で入力")
-        layout.operator(OBJECT_OT_reset_all_shape_keys.bl_idname, text="アクティブなシェイプキーを0の値で入力")
         layout.operator(OBJECT_OT_keyframe_non_muted_shape_keys.bl_idname, text="ミュート以外のシェイプキーを現在のまま入力")
         layout.operator(OBJECT_OT_keyframe_non_muted_shape_keys_zero.bl_idname, text="ミュート以外のシェイプキーを0の値で入力")
 
